@@ -1,0 +1,25 @@
+{
+    "owner":  "DhruvPatel6429",
+    "repo":  "File",
+    "pullNumber":  999999,
+    "pullTitle":  "Debug predictive drift test",
+    "pullUrl":  "http://localhost/test-predictive",
+    "author":  "debug",
+    "changedFiles":  [
+                         {
+                             "filename":  "src/server.ts",
+                             "status":  "modified",
+                             "additions":  1,
+                             "deletions":  0,
+                             "changes":  1,
+                             "patch":  "@@ debug predictive analyzer invocation for src/server.ts @@"
+                         }
+                     ],
+    "changedCodeNodes":  [
+
+                         ],
+    "artifacts":  [
+
+                  ],
+    "blastRadiusSummary":  "No mapped documentation drift predicted from 1 changed file(s)."
+}
