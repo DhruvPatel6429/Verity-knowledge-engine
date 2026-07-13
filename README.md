@@ -25,9 +25,13 @@
   </a>
 </p>
 
-<p align="center"><a href="https://youtu.be/BrIK7sZiI7M"><strong>▶ Watch the full demo video</strong></a></p>
+<p align="center">
+  <a href="https://youtu.be/BrIK7sZiI7M"><strong>▶ Watch the full 3-minute demo</strong></a>
+</p>
 
-> Prefer it playable directly on GitHub instead of linking out? Drag `Verity_Final_Demo.mp4` into a new GitHub Issue's comment box on your repo (no need to submit the issue), copy the `https://github.com/user-attachments/assets/...` URL it generates, and paste that URL alone on its own line anywhere in this file — GitHub renders it as an inline playable video automatically.
+<p align="center">
+  See a real code change turn into a live Neo4j graph update, a Slack Drift Card, and a cited, human-approved documentation fix — all in one continuous run, no mockups.
+</p>
 
 ---
 
