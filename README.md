@@ -20,14 +20,14 @@
 ## 🎬 Watch the 3-Minute Demo
 
 <p align="center">
-  <a href="PASTE_YOUR_VIDEO_LINK_HERE">
+  <a href="https://youtu.be/BrIK7sZiI7M">
     <img src="docs/screenshots/demo-drift-card.png" alt="Watch the Verity demo video" width="600">
   </a>
 </p>
 
-<p align="center"><a href="PASTE_YOUR_VIDEO_LINK_HERE"><strong>▶ Watch the full demo video</strong></a></p>
+<p align="center"><a href="https://youtu.be/BrIK7sZiI7M"><strong>▶ Watch the full demo video</strong></a></p>
 
-> **Note for Dhruv:** replace `PASTE_YOUR_VIDEO_LINK_HERE` (in both places above) with your actual video URL once uploaded — YouTube (set to **Unlisted**) or Loom both work fine. If you want it to play *inline* directly on the GitHub-rendered README instead of just linking out, drag `Verity_Final_Demo.mp4` into a new GitHub Issue's comment box on your repo (don't have to submit the issue), copy the `https://github.com/user-attachments/assets/...` URL it generates, and paste that URL alone on its own line anywhere in this file — GitHub will render it as an inline playable video automatically.
+> Prefer it playable directly on GitHub instead of linking out? Drag `Verity_Final_Demo.mp4` into a new GitHub Issue's comment box on your repo (no need to submit the issue), copy the `https://github.com/user-attachments/assets/...` URL it generates, and paste that URL alone on its own line anywhere in this file — GitHub renders it as an inline playable video automatically.
 
 ---
 
