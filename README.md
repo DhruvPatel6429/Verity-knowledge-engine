@@ -17,6 +17,20 @@
 
 ---
 
+## 🎬 Watch the 3-Minute Demo
+
+<p align="center">
+  <a href="PASTE_YOUR_VIDEO_LINK_HERE">
+    <img src="docs/screenshots/demo-drift-card.png" alt="Watch the Verity demo video" width="600">
+  </a>
+</p>
+
+<p align="center"><a href="PASTE_YOUR_VIDEO_LINK_HERE"><strong>▶ Watch the full demo video</strong></a></p>
+
+> **Note for Dhruv:** replace `PASTE_YOUR_VIDEO_LINK_HERE` (in both places above) with your actual video URL once uploaded — YouTube (set to **Unlisted**) or Loom both work fine. If you want it to play *inline* directly on the GitHub-rendered README instead of just linking out, drag `Verity_Final_Demo.mp4` into a new GitHub Issue's comment box on your repo (don't have to submit the issue), copy the `https://github.com/user-attachments/assets/...` URL it generates, and paste that URL alone on its own line anywhere in this file — GitHub will render it as an inline playable video automatically.
+
+---
+
 ## The Problem
 
 Engineering teams move fast. Every pull request changes reality — but the knowledge that describes that reality doesn't move with it.
@@ -35,43 +49,9 @@ Weeks later, a different engineer touches the same file and unknowingly repeats 
 
 ## Before vs After Verity
 
-**Without Verity**
-```text
-Developer changes rateLimiter.js
-        │
-        ▼
-Documentation quietly becomes stale
-        │
-        ▼
-An incident occurs
-        │
-        ▼
-An engineer manually searches
-  • GitHub
-  • Slack
-  • Docs
-  • Jira
-        │
-        ▼
-Hours lost during the investigation
-```
-
-**With Verity**
-```text
-Developer changes rateLimiter.js
-        │
-        ▼
-Knowledge graph detects the impact
-        │
-        ▼
-A Drift Card appears in Slack automatically
-        │
-        ▼
-The engineer updates docs before merge
-        │
-        ▼
-The drift never reaches production
-```
+<p align="center">
+  <img src="docs/screenshots/before-after-verity.png" alt="Before vs After Verity" width="800">
+</p>
 
 The difference isn't that Verity works faster than a human search — it's that Verity already knows the connections *before* anyone has to go looking for them.
 
@@ -140,65 +120,17 @@ npm run dev
 
 Your Slack workspace is now connected. Try `@Verity who owns authentication?` in any channel Verity has been invited to.
 
+For exact scoring formulas, relationship types, and API contracts, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
 ---
 
 ## Architecture
 
 Verity's stack is Slack-native at the front and back, with a graph-backed evidence layer in the middle. The reasoning model is one step in the pipeline — not the foundation it's built on.
 
-```text
-                                   Slack
-                        (Slack App · Events API · Slash Commands)
-                                     │
-                                     ▼
-                          ┌────────────────────┐
-                          │   Slack Assistant   │
-                          │   (Bolt SDK core)   │
-                          └─────────┬──────────┘
-                                     │
-                                     ▼
-                     ┌──────────────────────────────┐
-                     │   Evidence Retrieval Layer   │
-                     └─────────────┬────────────────┘
-                                     │
-              ┌──────────────────────┼──────────────────────┐
-              ▼                      ▼                      ▼
-     Neo4j Knowledge Graph   Slack Conversation Retrieval   GitHub MCP Server
-     (recursive Cypher          Layer (past Slack             (live file state,
-      traversal, blast radius)  threads & discussions)         no stale cache)
-              │                      │                      │
-              └──────────────────────┼──────────────────────┘
-                                     ▼
-                     ┌──────────────────────────────┐
-                     │  Evidence Fusion & Reasoning │
-                     │  (LLM — summarizes & cites   │
-                     │   the retrieved evidence)    │
-                     └─────────────┬────────────────┘
-                                     │
-                                     ▼
-                          Slack Response
-                (Block Kit Drift Cards · Threads ·
-                     Interactive Buttons)
-```
-
-### Change Detection Layer
-
-The diagram above shows how Verity answers a question. This is the other half — how Verity notices a change in the first place, before anyone asks it anything:
-
-```text
-              Change Detection Layer
-                        │
-                        ▼
-              GitHub Webhook fires
-                        │
-                        ▼
-          GitHub MCP retrieves current file state
-                        │
-                        ▼
-             Neo4j Knowledge Graph updates
-```
-
-This runs independently of the Slack query path above — it's what keeps the graph current so that, by the time an engineer asks a question, the evidence already reflects the latest code.
+<p align="center">
+  <img src="docs/screenshots/architecture-overview.png" alt="Verity architecture overview" width="800">
+</p>
 
 ### Why GitHub MCP?
 
@@ -242,43 +174,11 @@ Engineer reviews and acts before deployment
 
 Every organizational artifact is a node. Relationships connect them the way engineering knowledge actually connects in the real world — not the way it's siloed across five different tools.
 
-```text
-                    ┌─────────────┐
-                    │    Code     │
-                    └──────┬──────┘
-                           │
-       ┌──────────┬────────┼─────────┬──────────┐
-       ▼          ▼        ▼         ▼          ▼
- Documentation   ADR    Service   Incident   Slack Thread
-       │                    │          │           │
-       ▼                    ▼          ▼           ▼
-   Runbook              Owner Team  Jira Ticket  Discussion
-```
-
-| Node Type | Purpose |
-|---|---|
-| Code | Source files |
-| Document | Documentation |
-| ADR | Architecture Decision Records |
-| Jira | Engineering tickets |
-| Service | Microservices |
-| Owner | Responsible team |
-| Incident | Production issues |
-| Runbook | Operational guides |
-| Slack Thread | Team discussions |
+<p align="center">
+  <img src="docs/screenshots/graph-data-model.png" alt="Verity graph data model and recursive impact flow" width="800">
+</p>
 
 **Relationship types:** `DOCUMENTS`, `IMPLEMENTS`, `DEPENDS_ON`, `OWNS`, `GENERATED_FROM`, `MENTIONS`
-
-**Example — a single file, fully connected:**
-```text
-rateLimiter.js
-   ├── DOCUMENTS ──────► ADR-014
-   ├── DOCUMENTS ──────► Rate Limiting Architecture Doc
-   ├── DEPENDS_ON ─────► API Gateway
-   ├── OWNS ───────────► Platform Team
-   ├── MENTIONS ───────► Slack Thread (#platform-eng)
-   └── GENERATED_FROM ─► Redis Incident (Mar 2026)
-```
 
 Because Neo4j supports recursive Cypher traversal natively, Verity doesn't stop at direct relationships — it walks the full dependency chain to compute impact, the same way an experienced engineer would trace consequences by hand, just automatically and at graph scale.
 
@@ -323,30 +223,9 @@ This isn't a rejection of retrieval — Verity still retrieves and cites evidenc
 
 Every answer Verity gives follows the same disciplined pipeline — no shortcuts, no guessing:
 
-```text
-Question
-   │
-   ▼
-Intent & entity extraction (Slack Assistant)
-   │
-   ▼
-Neo4j graph query (relationships, blast radius)
-   │
-   ▼
-Slack Conversation Retrieval Layer — past discussions (seed fallback in demo mode)
-   │
-   ▼
-GitHub MCP (latest repo state)
-   │
-   ▼
-Evidence ranking
-   │
-   ▼
-Evidence-Grounded Reasoning Layer — LLM summarizes & synthesizes, does not originate facts
-   │
-   ▼
-Cited Slack response
-```
+<p align="center">
+  <img src="docs/screenshots/evidence-pipeline.png" alt="Verity evidence retrieval and grounding pipeline" width="800">
+</p>
 
 If the pipeline can't find supporting evidence, Verity says so directly:
 
@@ -375,19 +254,11 @@ Verity lives entirely inside Slack — no separate dashboard to check.
 /verity-status api/middleware/auth.js
 ```
 
-**Automatic Drift Cards**, posted whenever a change creates knowledge drift:
-```
-⚠️  Knowledge Drift Detected
+**Automatic Drift Cards**, posted whenever a change creates knowledge drift — this is a real screenshot from a live run, not a mockup:
 
-Changed File:         api/middleware/rateLimiter.js
-Impacted Docs:         ADR-014, Rate Limiting Architecture
-Responsible Team:      Platform Team
-Related Runbooks:      Redis Failover Runbook
-Related Incidents:     Redis Incident (Mar 2026)
-Suggested Reviewers:   @platform-eng
-
-[ Open Graph ]  [ Review Evidence ]  [ View Blast Radius ]  [ Ask Follow-up ]
-```
+<p align="center">
+  <img src="docs/screenshots/demo-drift-card.png" alt="Verity Drift Card posted in Slack" width="500">
+</p>
 
 Every card includes interactive buttons to open the graph, review the underlying evidence, view the full blast radius, or ask a follow-up question — all without leaving the channel.
 
@@ -400,10 +271,21 @@ Every card includes interactive buttons to open the graph, review the underlying
 1. A GitHub webhook tells Verity that `api/middleware/rateLimiter.js` changed.
 2. Verity pulls the current file contents via GitHub MCP — never a stale cache.
 3. The knowledge graph identifies everything connected: ADR-014, the rate-limiting doc, the Platform Team, the API Gateway, a prior Redis incident, and the relevant Slack thread.
-4. Recursive blast-radius analysis scores each connected artifact by dependency depth and relevance.
+4. Recursive blast-radius analysis scores each connected artifact by dependency depth and relevance:
+
+<p align="center">
+  <img src="docs/screenshots/demo-blast-radius-graph.png" alt="Live blast radius graph visualization" width="700">
+</p>
+
 5. A Drift Card posts automatically in Slack, showing the changed file, impacted docs, responsible team, related runbooks, and prior incidents.
 6. An engineer asks `@Verity explain the impact of the rate limiter change` — Verity searches the graph, Slack, and GitHub, then responds with a cited, evidence-backed explanation.
-7. The team updates the documentation before the change ships. The drift never reaches production.
+7. The team can approve, edit, or discard an AI-drafted documentation fix — every draft is built strictly from cited sources, and a human always reviews before anything is restored:
+
+<p align="center">
+  <img src="docs/screenshots/demo-ai-draft-approval.png" alt="AI-drafted documentation fix awaiting human approval" width="700">
+</p>
+
+The drift never reaches production.
 
 ---
 
@@ -416,11 +298,19 @@ Every card includes interactive buttons to open the graph, review the underlying
 - **Incident investigation** — surfaces prior incidents, relevant runbooks, and responsible owners immediately, cutting investigation time during a live incident.
 - **Onboarding** — lets new engineers ask natural-language questions in Slack and get answers grounded in real internal history, instead of spending weeks reverse-engineering tribal knowledge.
 
+Verity also rolls drift up into an org-wide health score, so teams can see decay accumulating across the whole system, not just one file:
+
+<p align="center">
+  <img src="docs/screenshots/demo-memory-health.png" alt="Organizational memory health dashboard in Slack" width="500">
+</p>
+
 ---
 
 ## Technology Stack — What We Actually Built
 
 Verity is built around four core integrations required by the challenge — a Slack app (Bolt SDK), GitHub MCP, the Slack Conversation Retrieval Layer, and a Neo4j knowledge graph. An LLM sits at the end of the pipeline purely as a reasoning/summarization step over evidence those four systems retrieve.
+
+For exact scoring formulas, relationship types, API endpoints, and Slack action contracts, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 | Layer               | Technology                             | Purpose                                                                    |
 | ------------------- | ---------------------------------------- | --------------------------------------------------------------------------- |
@@ -483,6 +373,10 @@ Verity is built around four core integrations required by the challenge — a Sl
 
 ## Roadmap
 
+<p align="center">
+  <img src="docs/screenshots/repo-structure-roadmap.png" alt="Verity repository structure and phased roadmap" width="800">
+</p>
+
 - **Phase 1 — Shipped**
   - Knowledge graph
   - Drift detection
@@ -517,7 +411,8 @@ Verity is built around four core integrations required by the challenge — a Sl
 verity-agent/
 ├── .agents/
 ├── docs/
-│   └── ARCHITECTURE.md
+│   ├── ARCHITECTURE.md
+│   └── screenshots/
 ├── src/
 │   ├── server.ts
 │   ├── graph.ts
