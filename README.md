@@ -266,6 +266,14 @@ Verity lives entirely inside Slack — no separate dashboard to check.
 
 Every card includes interactive buttons to open the graph, review the underlying evidence, view the full blast radius, or ask a follow-up question — all without leaving the channel.
 
+**Threaded, cited Q&A** — when an engineer asks a question directly in a thread, Verity answers inline with the exact sources it checked, so the answer can be verified rather than just trusted:
+
+<p align="center">
+  <img src="docs/screenshots/demo-thread-qa.png" alt="Verity answering an ownership question in a Slack thread with cited sources" width="500">
+</p>
+
+In this real run, an engineer asks `@verity who owns the authentication service?` directly in a thread. Verity replies in seconds with the answer *and* a "Sources checked" list — Neo4j ownership nodes, the related Notion doc, the relevant runbook, and the Slack threads it cross-referenced — so the engineer can click through and confirm the answer themselves instead of taking it on faith.
+
 ---
 
 ## Demo Walkthrough (3 minutes)
